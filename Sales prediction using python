@@ -1,0 +1,46 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+data = pd.read_csv("/content/advertising (1).csv")
+data
+print(data.head())
+plt.figure(figsize=(12,6))
+#TV ADV VS SALES
+plt.subplot(131)
+plt.scatter(data["TV"],data["Sales"],color="b",alpha=0.7)
+plt.xlabel("TV Advertising budget ($)")
+plt.ylabel("Sales(in thousands of units)")
+plt.title("TV Advertising vs.Sales")
+#Radio ADV vs .Sales
+plt.subplot(132)
+plt.scatter(data["Radio"],data["Sales"], color="g",alpha=0.7)
+plt.xlabel("Radio Advertising Budget ($)")
+plt.ylabel("Sales (in thousands of units)")
+plt.title("Radio Advertising vs. Sales")
+#Newspaper ADV vs.Sales
+plt.subplot(133)
+plt.scatter(data["Newspaper"], data["Sales"],color="r",alpha=0.7)
+plt.xlabel("Newspaper Advertising Budget ($)")
+plt.ylabel("Sales (in thousands of units)")
+plt.title("Newspaper Advertising vs. Sales")
+
+plt.tight_layout()
+plt.show()
+#prepare data for modeling
+x = data[["TV","Radio","Newspaper"]] #predictor variable(TV advertising budget)
+y = data["Sales"] #response variable(sales)
+#split the data into training and testing sets
+x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2,random_state=42)
+model = LinearRegression()
+model.fit(x_train, y_train)
+print(f"Intercept (b0): {model.intercept_:.2f}")
+print(f"slope (b1): {model.coef_[0]:.2f}")
+#predict sales for the test set
+y_pred = model.predict(x_test)
+#Evaluate the model
+print("\npredicted sales(Test set):")
+for i in range(5):
+  print(f"sample {i+1}: {y_pred[i]:.2f} (Actual: {y_test.iloc[i]:.2f})")
+
